@@ -1,15 +1,14 @@
+mod words;
 use std::io::{stdout, Write};
 use std::io::stdin;
-use std::fs::File;
-use std::io::{ self, BufRead };
 use rand::{ self, Rng };
+use crate::words::words::WORDS;
 
 enum GameState {
     MENU, INGAME, END, QUIT
 }
 
 struct GameData {
-    word_list: Vec<String>,
     avail_characters : [bool; 26],
     lives : u8,
     guess_word : String,
@@ -20,7 +19,6 @@ struct GameData {
 impl Default for GameData {
     fn default() -> Self {
         GameData { 
-            word_list: Vec::new(),
             avail_characters: [true; 26], 
             lives: 6,
             guess_word: String::new(),
@@ -32,30 +30,16 @@ impl Default for GameData {
 
 fn init_game_data(data: &mut GameData) {
     *data = GameData::default(); 
-    load_words(&mut data.word_list);
-    data.guess_word = get_random_word(&data.word_list);
+    data.guess_word = get_random_word();
     data.progress = std::iter::repeat('_').take(data.guess_word.len()).collect::<String>()
 }
 
-fn get_random_word(word_list: &Vec<String>) -> String {
-    word_list[rand::thread_rng().gen_range(0..word_list.len())].to_string()
+fn get_random_word() -> String{
+    WORDS[rand::thread_rng().gen_range(0..WORDS.len())].to_string()
 }
 
-fn load_words(word_list: &mut Vec<String>) {
-    if word_list.len() > 0 {
-        return;
-    }
-
-    let file = File::open("../words.txt").unwrap(); 
-    let lines = io::BufReader::new(file).lines(); 
-    for line in lines {
-        let word: String = line.unwrap();
-        word_list.push(word);
-    }
-}
-
-fn scan_char_lower() -> char {
-    let mut str: String = String::new();
+fn scan_char_lower() -> char{
+   let mut str: String = String::new();
     match stdin().read_line(&mut str) {
         Ok(_) => {}
         Err(_) => str = " ".to_string(),
@@ -122,11 +106,11 @@ fn game(state: &mut GameState, data: &mut GameData) {
 fn end(state: &mut GameState, data: &mut GameData) {
     if data.win {
         println!("\t\t\tYOU WIN!\n");
-        println!("\t\tWord: {}\n", data.guess_word);
+        println!("\t\t\tWord: {}\n", data.guess_word);
     }
     else {
         println!("\t\t\tYOU LOSE!");
-        println!("\t\tWord: {}\n", data.guess_word);
+        println!("\t\t\tWord: {}\n", data.guess_word);
     }
 
     println!("1. Play Again");

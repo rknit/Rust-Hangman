@@ -67,11 +67,11 @@ fn main() {
 }
 
 fn menu(state: &mut GameState, data: &mut GameData) {
-    println!("1. PLAY");
-    println!("2. QUIT");
+    println!("\t1. PLAY");
+    println!("\t2. QUIT");
     println!("\n");
 
-    print!("Choice: ");
+    print!("\tChoice: ");
     stdout().flush().unwrap();
     let choice: char = scan_char_lower();
 
@@ -92,8 +92,10 @@ fn game(state: &mut GameState, data: &mut GameData) {
         return;
     }
 
-    display_guess(data);
-    display_avail(data);
+    display_man(data.lives);
+
+    display_guess(&mut data.progress);
+    display_avail(&mut data.avail_characters);
 
     print!("\t\tCharacter: ");
     stdout().flush().unwrap();
@@ -105,17 +107,21 @@ fn game(state: &mut GameState, data: &mut GameData) {
 
 fn end(state: &mut GameState, data: &mut GameData) {
     if data.win {
-        println!("\t\t\tYOU WIN!\n");
-        println!("\t\t\tWord: {}\n", data.guess_word);
+        println!("\n\t\t\tYOU WIN!\n");
+        println!("\n\t\t\tWord: {}\n", data.guess_word);
     }
     else {
-        println!("\t\t\tYOU LOSE!");
-        println!("\t\t\tWord: {}\n", data.guess_word);
+        println!("\t\t\tYOU LOSE!\n");
+        display_man(0);
+        println!("\n\t\t\tWord: {}\n", data.guess_word);
     }
 
-    println!("1. Play Again");
-    println!("2. To Menu");
-    println!("3. Quit");
+    println!();
+    println!("\t1. Play Again");
+    println!("\t2. To Menu");
+    println!("\t3. Quit");
+    print!("\tChoice: ");
+    stdout().flush().unwrap();
     let choice: char = scan_char_lower();
 
     match choice {
@@ -130,7 +136,64 @@ fn end(state: &mut GameState, data: &mut GameData) {
     }
 }
 
-fn display_avail(data: &mut GameData) {
+fn display_man(lives: u8) {
+    // l1
+    if lives == 0 {
+        println!("\t\t\t    ___");
+    }
+
+    // l2
+    print!("\t\t\t   ");
+    if lives <= 3 {
+        print!("_");
+    }
+    else {
+        print!(" ");
+    }
+    if lives <= 5 {
+        print!("o");
+    }
+    if lives <= 3 {
+        print!("_");
+    }
+    else {
+        print!(" ");
+    }
+    if lives <= 1 {
+        println!(" |");
+    }
+    else {
+        println!();
+    }
+
+    // l3
+    print!("\t\t\t   ");
+    if lives <= 4 {
+        print!(" | ");
+    }
+    if lives <= 1 {
+        println!(" |");
+    }
+    else {
+        println!();
+    }
+
+    // l4
+    print!("\t\t\t   ");
+    if lives <= 2 {
+        print!("/ \\");
+    }
+    if lives <= 1 {
+        println!(" |");
+    }
+    else {
+        println!();
+    }
+
+    println!();
+}
+
+fn display_avail(avail_characters: &mut [bool; 26]) {
     let mut idx: usize = 0;
     print!("\t\t");
     while idx < 26 {
@@ -139,7 +202,7 @@ fn display_avail(data: &mut GameData) {
             print!("\t\t");
         }
 
-        if data.avail_characters[idx] {
+        if avail_characters[idx] {
             let ch: char = ('a' as u8 + idx as u8) as char;
             print!("{} ", ch);
         }
@@ -152,9 +215,9 @@ fn display_avail(data: &mut GameData) {
     println!("\n\n");
 }
 
-fn display_guess(data: &mut GameData) {
-    print!("\t");
-    for ch in data.progress.as_bytes() {
+fn display_guess(progress: &mut String) {
+    print!("\t\t\t");
+    for ch in progress.as_bytes() {
         print!("{} ", *ch as char);
     }
     println!();

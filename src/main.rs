@@ -108,7 +108,7 @@ fn game(state: &mut GameState, data: &mut GameData) {
 
 fn end(state: &mut GameState, data: &mut GameData) {
     if data.win {
-        println!("\n\t\t\tYOU WIN!\n");
+        println!("\t\t\tYOU WIN!\n");
         println!("\n\t\t\tWord: {}\n", data.guess_word);
     }
     else {

@@ -93,6 +93,7 @@ fn game(state: &mut GameState, data: &mut GameData) {
     }
 
     display_man(data.lives);
+    println!();
 
     display_guess(&mut data.progress);
     display_avail(&mut data.avail_characters);
@@ -141,7 +142,6 @@ fn display_man(lives: u8) {
     if lives == 0 {
         println!("\t\t\t    ___");
     }
-
     // l2
     print!("\t\t\t   ");
     if lives <= 3 {
@@ -165,7 +165,6 @@ fn display_man(lives: u8) {
     else {
         println!();
     }
-
     // l3
     print!("\t\t\t   ");
     if lives <= 4 {
@@ -177,7 +176,6 @@ fn display_man(lives: u8) {
     else {
         println!();
     }
-
     // l4
     print!("\t\t\t   ");
     if lives <= 2 {
@@ -189,7 +187,6 @@ fn display_man(lives: u8) {
     else {
         println!();
     }
-
     println!();
 }
 
